@@ -16,12 +16,6 @@ void auto_brake(int devid)
     // Setup
    int red_gpio = RED_LED;
    int green_gpio = GREEN_LED;
-   gpio_mode(red_gpio, OUTPUT);
-   gpio_mode(green_gpio, OUTPUT);
-   ser_setup(0);
-
-   ser_printline(0, "Setup complete.");
-
    uint16_t dist = 0;
 
    // read data/input and provide output/brake
@@ -69,9 +63,10 @@ void steering(int gpio, int pos)
     // Your code goes here (Use Lab 05 for reference)
     // Check the project document to understand the task
 
-    gpio_write(gpio, ON);
+    
     int change = (SERVO_PULSE_MAX - SERVO_PULSE_MIN) / 180;
     int delay = SERVO_PULSE_MIN + (change*pos);
+    gpio_write(gpio, ON);
     delay_usec(delay);
     gpio_write(gpio, OFF);
     delay = SERVO_PERIOD - delay; 
