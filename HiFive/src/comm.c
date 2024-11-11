@@ -3,12 +3,51 @@
 #include <string.h>
 
 #include "eecs388_lib.h"
+#define SERVO_PULSE_MAX 2400
+#define SERVO_PULSE_MIN 544
+#define SERVO_PERIOD 20000
+
 
 void auto_brake(int devid)
 {
     // Task-1: 
     // Your code here (Use Lab 02 - Lab 04 for reference)
     // Use the directions given in the project document
+    // Setup
+   int red_gpio = RED_LED;
+   int green_gpio = GREEN_LED;
+   gpio_mode(red_gpio, OUTPUT);
+   gpio_mode(green_gpio, OUTPUT);
+   ser_setup(0);
+
+   ser_printline(0, "Setup complete.");
+
+   uint16_t dist = 0;
+
+   // read data/input and provide output/brake
+   while(1) {
+       // read data
+       if ('Y' == ser_read(0) && 'Y' == ser_read(0)) {
+           uint8_t lower_bit = ser_read(0); // read byte 3
+           uint8_t upper_bit = ser_read(0); // read byte 4
+           dist = (upper_bit << 4) + lower_bit;
+       }
+       // action and led
+       if (dist > 200) {
+           gpio_write(green_gpio, ON);
+           gpio_write(red_gpio, OFF);
+       } else if (dist <= 200 && dist > 100) {
+           gpio_write(green_gpio, ON);
+           gpio_write(red_gpio, ON);
+       } else if (dist <= 100 && dist > 60) {
+           gpio_write(green_gpio, OFF);
+           gpio_write(red_gpio, ON);
+       } else if (dist <= 60 ) {
+           gpio_write(red_gpio, ON);
+           delay(100);
+           gpio_write(red_gpio, OFF);
+       }
+   }
 }
 
 int read_from_pi(int devid)
@@ -29,6 +68,14 @@ void steering(int gpio, int pos)
     // Task-3: 
     // Your code goes here (Use Lab 05 for reference)
     // Check the project document to understand the task
+
+    gpio_write(gpio, ON);
+    int change = (SERVO_PULSE_MAX - SERVO_PULSE_MIN) / 180;
+    int delay = SERVO_PULSE_MIN + (change*pos);
+    delay_usec(delay);
+    gpio_write(gpio, OFF);
+    delay = SERVO_PERIOD - delay; 
+    delay_usec(delay);
 }
 
 
@@ -65,16 +112,16 @@ int main()
             // You are welcome to pass the angle values directly to the steering function.
             // If the servo function is written correctly, it should still work,
             // only the movements of the servo will be more subtle
-            if(angle>0){
+            /*if(angle>0){
                 steering(gpio, 180);
             }
             else {
                 steering(gpio,0);
-            }
+            }*/
             
             // Uncomment the line below to see the actual angles on the servo.
             // Remember to comment out the if-else statement above!
-            // steering(gpio, angle);
+            steering(gpio, angle);
         }
 
     }
