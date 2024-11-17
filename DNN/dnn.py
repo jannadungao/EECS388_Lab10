@@ -90,10 +90,11 @@ while(1):
         # The if condition is used to send every 4th
         # prediction from the model. This is so that
         # the HiFive can run the other functions in between
-        if count%4 == 0:
-            ser1 = serial.Serial("/dev/ttyAMA1", 115200)
+        if count%4 == 0:            
             # open serial connection
+            ser1 = serial.Serial("/dev/ttyAMA1", 115200)
             # write to serial output
+            deg = string(int(deg)) + '\n'
             ser1.write(bytes(deg))
 
         pred_end   = time.time()

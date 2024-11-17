@@ -50,11 +50,13 @@ int read_from_pi(int devid)
     // You code goes here (Use Lab 09 for reference)
     // After performing Task-2 at dnn.py code, modify this part to read angle values from Raspberry Pi.
     char data[256];
+    int angle;
     if(ser_isready(1)){    // devid is 1 because that's the raspberry pi
         ser_readline(1, 256, data);
+        sscanf(data, "%d", &angle);
+        return angle;
     }
-
-    return data;
+    return 0;
 }
 
 void steering(int gpio, int pos)
@@ -62,8 +64,6 @@ void steering(int gpio, int pos)
     // Task-3: 
     // Your code goes here (Use Lab 05 for reference)
     // Check the project document to understand the task
-
-    
     int change = (SERVO_PULSE_MAX - SERVO_PULSE_MIN) / 180;
     int delay = SERVO_PULSE_MIN + (change*pos);
     gpio_write(gpio, ON);
