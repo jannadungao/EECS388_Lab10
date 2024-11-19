@@ -50,13 +50,13 @@ int read_from_pi(int devid)
     // You code goes here (Use Lab 09 for reference)
     // After performing Task-2 at dnn.py code, modify this part to read angle values from Raspberry Pi.
     char data[256];
-    int angle;
+    int angle = 0;
     if(ser_isready(1)){    // devid is 1 because that's the raspberry pi
         ser_readline(1, 256, data);
         sscanf(data, "%d", &angle);
         return angle;
     }
-    return 0;
+    return angle;
 }
 
 void steering(int gpio, int pos)
