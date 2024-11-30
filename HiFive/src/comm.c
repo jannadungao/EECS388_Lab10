@@ -17,31 +17,28 @@ void auto_brake(int devid)
    int red_gpio = RED_LED;
    int green_gpio = GREEN_LED;
    uint16_t dist = 0;
-
-   // read data/input and provide output/brake
-   while(1) {
-       // read data
-       if ('Y' == ser_read(0) && 'Y' == ser_read(0)) {
-           uint8_t lower_bit = ser_read(0); // read byte 3
-           uint8_t upper_bit = ser_read(0); // read byte 4
-           dist = (upper_bit << 4) + lower_bit;
-       }
-       // action/led
-       if (dist > 200) {
-           gpio_write(green_gpio, ON);
-           gpio_write(red_gpio, OFF);
-       } else if (dist <= 200 && dist > 100) {
-           gpio_write(green_gpio, ON);
-           gpio_write(red_gpio, ON);
-       } else if (dist <= 100 && dist > 60) {
-           gpio_write(green_gpio, OFF);
-           gpio_write(red_gpio, ON);
-       } else if (dist <= 60 ) {
-           gpio_write(red_gpio, ON);
-           delay(100);
-           gpio_write(red_gpio, OFF);
-       }
-   }
+    // read data
+    if ('Y' == ser_read(0) && 'Y' == ser_read(0)) {
+        uint8_t lower_bit = ser_read(0); // read byte 3
+        uint8_t upper_bit = ser_read(0); // read byte 4
+        dist = (upper_bit << 4) + lower_bit;
+    }
+    // action/led
+    if (dist > 200) {
+        gpio_write(green_gpio, ON);
+        gpio_write(red_gpio, OFF);
+    } else if (dist <= 200 && dist > 100) {
+        gpio_write(green_gpio, ON);
+        gpio_write(red_gpio, ON);
+    } else if (dist <= 100 && dist > 60) {
+        gpio_write(green_gpio, OFF);
+        gpio_write(red_gpio, ON);
+    } else if (dist <= 60 ) {
+        gpio_write(red_gpio, ON);
+        delay(100);
+        gpio_write(red_gpio, OFF);
+    }
+   
 }
 
 int read_from_pi(int devid)
