@@ -94,8 +94,8 @@ while(1):
             # open serial connection
             ser1 = serial.Serial("/dev/ttyAMA1", 115200)
             # write to serial output
-            deg = string(int(deg)) + '\n'
-            ser1.write(bytes(deg))
+            new_deg = string(int(new_deg)) + '\n'
+            ser1.write(bytes(new_deg))
 
         pred_end   = time.time()
 
