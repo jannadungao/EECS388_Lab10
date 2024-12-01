@@ -32,7 +32,7 @@ config = tf.ConfigProto(intra_op_parallelism_threads=NCPU, \
 
 #The max number of frames to be processed, 
 #    and the number of frames already processed
-NFRAMES = 1000
+NFRAMES = 10000000
 curFrame = 0
 
 #Periodic task options
@@ -92,7 +92,6 @@ while(1):
         # the HiFive can run the other functions in between
         if count%4 == 0:            
             # open serial connection
-            ser1 = serial.Serial("/dev/ttyAMA1", 115200)
             # write to serial output
             new_deg = string(int(new_deg)) + '\n'
             ser1.write(bytes(new_deg))

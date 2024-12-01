@@ -35,8 +35,10 @@ void auto_brake(int devid)
         gpio_write(red_gpio, ON);
     } else if (dist <= 60 ) {
         gpio_write(red_gpio, ON);
-        delay(100);
+        gpio_write(green_gpio, OFF);
+        delay(50);
         gpio_write(red_gpio, OFF);
+        delay(50);
     }
    
 }
@@ -46,14 +48,14 @@ int read_from_pi(int devid)
     // Task-2: 
     // You code goes here (Use Lab 09 for reference)
     // After performing Task-2 at dnn.py code, modify this part to read angle values from Raspberry Pi.
-    char data[256];
-    int angle = 0;
-    if(ser_isready(1)){    // devid is 1 because that's the raspberry pi
-        ser_readline(1, 256, data);
+    char data[5];
+    int angle;
+    while (ser_isready(1)){    // devid is 1 because that's the raspberry pi
+        ser_readline(1, 5, data);
         sscanf(data, "%d", &angle);
         return angle;
     }
-    return angle;
+    return -1000;
 }
 
 void steering(int gpio, int pos)
@@ -90,11 +92,14 @@ int main()
 
     printf("Setup completed.\n");
     printf("Begin the main loop.\n");
-
+    int angle = 0;
     while (1) {
 
         auto_brake(lidar_to_hifive); // measuring distance using lidar and braking
-        int angle = read_from_pi(pi_to_hifive); //getting turn direction from pi
+        int new_angle = read_from_pi(pi_to_hifive); //getting turn direction from pi
+        if (new_angle != -1000) {
+            angle = new_angle;
+        }
         printf("\nangle=%d", angle) 
         int gpio = PIN_19; 
         for (int i = 0; i < 10; i++){
